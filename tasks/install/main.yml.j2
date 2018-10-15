@@ -1,0 +1,5 @@
+---
+# file: {{ role_name }}/tasks/install/main.yml
+
+# delegate installation to the specific package manager
+- include: '{{ '{{' }} ansible_pkg_mgr {{ '}}' }}.yml'

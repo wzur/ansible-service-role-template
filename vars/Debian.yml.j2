@@ -1,0 +1,4 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/vars/Debian.yml
+_{{ var_prefix }}_os_specific: 'This is from Debian!'

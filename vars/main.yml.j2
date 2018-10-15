@@ -1,0 +1,9 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/vars/main.yml
+
+# determine if the latest package version has been requested
+{{ var_prefix }}_package_install_latest: "{{ '{{' }} ({{ var_prefix }}_package_version or False) and {{ var_prefix }}_package_version.lower() == 'latest' {{ '}}' }}"
+
+# determine if package version should be used for package installation
+{{ var_prefix }}_package_install_version: '{{ '{%' }} if {{ var_prefix }}_package_version | default(null) and {{ var_prefix }}_package_version.lower() not in ("latest", "present") {{ '%}{{' }} {{ var_prefix }}_package_version {{ '}}{%' }} endif {{ '%}' }}'

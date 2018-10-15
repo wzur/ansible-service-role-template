@@ -1,0 +1,16 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/defaults/main.yml
+# Variables in this file are automatically included into the role's context and can be overridden by the active play.
+
+# The name of a package which contains the service to install by this role.
+{{ var_prefix }}_package_name: '{{ role_name }}' # TODO: update me
+
+# The version of the package to install.
+# One of 'latest', 'present', empty or actual package version.
+# Empty value is equivalent to 'present'.
+{{ var_prefix }}_package_version:  # TODO: update me
+
+# The name of the service once installed from the package.
+# Often the same as the package name.
+{{ var_prefix }}_service_name: '{{ '{{' }} {{ var_prefix }}_package_name {{ '}}' }}' # TODO: update me

@@ -1,0 +1,62 @@
+{%- set title=role_name.split('-') | map('capitalize') | join(' ') -%}
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+{{ title }}
+{{ '=' *  (title | length) }}
+
+TODO: A brief description of the role goes here.
+
+* This role has been tested with AWS EC2 and with Virtualbox.
+* This role has been tested with Ubuntu 16.04 LTS (Xenial), Ubuntu 14.04 LTS (Trusty), Ubuntu 15.04 (Vivid), and Ubuntu 15.10 (Wily).
+* This role has been tested with CentOS 6.7 and CentOS 7.
+
+Requirements
+------------
+
+TODO Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+
+Role Variables
+--------------
+
+TODO A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- `{{ var_prefix }}_package_name`: optional package name, if the name guessed by the role is not correct, default is _TODO - default value_
+- `{{ var_prefix }}_package_version`: optional package version to install, either:
+    - `latest` - always installs the latest available version
+    - `present` or empty - install latest available version when package hasn't been installed yet or do nothing is package has been installed already
+    - actual package version - always installs the package in the version, default is _present_
+- `{{ var_prefix }}_service_name`: optional service name to enable and start, default is _TODO - default value_
+
+
+Dependencies
+------------
+
+TODO A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+
+Example Playbook
+----------------
+
+Here is an example playbook for this role:
+
+    - hosts: all
+      gather_facts: True
+      become: True
+      roles:
+        - role: {{ role_name }}
+          {{ var_prefix }}_package_version: latest
+
+see [tests.yml](./tests/test.yml) for another example, used for testing this role. 
+
+Testing role with Vagrant
+-------------------------
+
+Please run a Shell script - this requires [Ansible](http://docs.ansible.com) (at least 2.0) and [Vagrant](http://www.vagrantup.com/docs) installed:
+> `./run-test`
+
+License
+-------
+
+BSD
+
+Author Information
+------------------
+
+Waldemar Zurowski

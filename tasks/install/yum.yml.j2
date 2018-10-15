@@ -1,0 +1,10 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/tasks/install/yum.yml
+
+# install package
+- name: Install service {{ role_name }} package via yum
+  yum: >
+    name={{ '{{' }} {{ var_prefix }}_package_name {{ '}}{%' }} if {{ var_prefix }}_package_install_version {{ '%}-{{' }} {{ var_prefix }}_package_install_version {{ '}}{%' }} endif {{ '%}' }}
+    state={{ '{%' }} if {{ var_prefix }}_package_install_latest {{ '%}' }}latest{{ '{%' }} else {{ '%}' }}present{{ '{%' }} endif {{ '%}' }}
+  tags: packages

@@ -1,0 +1,18 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/tasks/configure/main.yml
+
+- name: TODO - all configuration steps for this service
+  debug: msg="Please, configure {{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }} service!"
+
+- name: TODO - example configuration file with notification of the service
+  copy:
+    content: 'Example configuration for service "{{ service_role_template_service_name }}"'
+    dest: '/tmp/{{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }}.txt'
+  notify: Restart {{ role_name }} service
+
+# Distribution specific configuration
+- include: '{{ '{{' }} ansible_distribution {{ '}}' }}.yml'
+
+- name: Apply all pending configuration changes
+  meta: flush_handlers

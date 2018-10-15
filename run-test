@@ -1,0 +1,53 @@
+#!/bin/sh -eu
+# This script uses Vagrant to provision a test virtual machine.
+# To select a machine for testing, give its name as an argument to this script.
+
+# 'Stolen' from configuration for Travis CI seen in many Ansible roles
+{
+  echo '[defaults]'
+  echo 'roles_path = ../'
+  echo 'host_key_checking = false'
+  echo 'retry_files_save_path = /tmp'
+  echo 'deprecation_warnings=True'
+} > ansible.cfg
+
+DEBUG=no
+
+while getopts ":d" opt
+do
+    case $opt in
+        d)
+            DEBUG=yes
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit 75
+            ;;
+    esac
+done
+
+# First check syntax
+ansible-playbook -ilocalhost, tests/test.yml --syntax-check
+
+# Create a virtual machine for testing
+vagrant up --provision-with=shell ${1+"$@"}
+
+# check each host separately
+for server in $(vagrant status | grep 'running (' | awk '{print $1}')
+do
+  echo "Test started for $server"
+  vagrant provision --provision-with=ansible "${server}"
+
+  # Idempotence test
+  echo -n "Idempotence test for $server: "
+  vagrant provision --provision-with=ansible "${server}" | grep -q 'changed=0.*failed=0' \
+      && (echo 'pass' && exit 0) \
+      || (echo 'fail' && exit 1)
+done
+
+if [ "x${DEBUG}" = 'xyes' ]
+then
+  echo 'All created virtual machines are up for inspection, if necessary'
+else
+  vagrant destroy -f
+fi

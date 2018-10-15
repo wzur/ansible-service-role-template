@@ -1,0 +1,9 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/tasks/configure/CentOS.yml
+
+# configuration specific to CentOS distribution
+
+- name: TODO - all configuration steps for this service for CentOS
+  debug: msg="Please, configure {{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }} service for CentOS!"
+  notify: Restart {{ role_name }} service

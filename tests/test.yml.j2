@@ -1,0 +1,38 @@
+{%- set var_prefix=role_name.split('-') | join('_') -%}
+---
+# file: {{ role_name }}/tests/test.yml
+
+- hosts: all
+  gather_facts: True
+  become: True
+  vars:
+    test_notification_message: 'Test for notification'
+    {{ var_prefix }}_package_name: 'nginx' # just a random name to test if the template works well
+  roles:
+    - role: {{ role_name }}
+      {{ var_prefix }}_package_version: present
+  pre_tasks:
+    - name: Install EPEL for CentOS
+      yum: name=epel-release
+      when: ansible_distribution | lower == 'centos'
+    - name: Refresh APT repository
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      apt: update_cache=yes cache_valid_time={{ '{{' }} 60*60*24 {{ '}}' }}
+      when: ansible_distribution | lower == 'ubuntu'
+  tasks:
+    - name: Check if handlers are invoked
+      copy:
+        content: '{{ '{{ test_notification_message }}' }}'
+        dest: '/tmp/notification.txt'
+      notify: Restart {{ role_name }} service
+
+    - name: Test if service has been really enabled in systemd
+      command: systemctl is-enabled {{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }}
+      register: systemd_enabled
+      failed_when: >
+        'enabled' not in systemd_enabled.stdout and
+        'Failed to get unit file' not in systemd_enabled.stderr
+      changed_when: false
+      when: >
+        ansible_service_mgr == 'systemd'
