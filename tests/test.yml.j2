@@ -4,7 +4,7 @@
 
 - hosts: all
   gather_facts: True
-  become: True
+  become: False
   vars:
     test_notification_message: 'Test for notification'
     {{ var_prefix }}_package_name: 'nginx' # just a random name to test if the template works well
@@ -13,9 +13,11 @@
       {{ var_prefix }}_package_version: present
   pre_tasks:
     - name: Install EPEL for CentOS
+      become: True
       yum: name=epel-release
       when: ansible_distribution | lower == 'centos'
     - name: Refresh APT repository
+      become: True
       environment:
         DEBIAN_FRONTEND: noninteractive
       apt: update_cache=yes cache_valid_time={{ '{{' }} 60*60*24 {{ '}}' }}
@@ -28,6 +30,7 @@
       notify: Restart {{ role_name }} service
 
     - name: Test if service has been really enabled in systemd
+      become: True
       command: systemctl is-enabled {{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }}
       register: systemd_enabled
       failed_when: >

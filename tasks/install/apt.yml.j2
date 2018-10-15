@@ -4,6 +4,7 @@
 
 # install package
 - name: Install {{ role_name }} package via apt
+  become: True
   environment:
     DEBIAN_FRONTEND: noninteractive
   apt: >

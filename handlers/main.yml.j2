@@ -2,4 +2,5 @@
 ---
 # file: {{ role_name }}/handlers/main.yml
 - name: Restart {{ role_name }} service
+  become: True
   service: name={{ '{{' }} {{ var_prefix }}_service_name {{ '}}' }} state=restarted
